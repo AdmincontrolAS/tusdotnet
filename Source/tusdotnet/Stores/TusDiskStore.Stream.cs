@@ -20,7 +20,7 @@ namespace tusdotnet.Stores
             try
             {
                 var fileUploadLengthProvidedDuringCreate = await GetUploadLengthAsync(fileId, cancellationToken);
-                using var diskFileStream = _fileRepFactory.Data(internalFileId).GetStream(FileMode.Append, FileAccess.Write, FileShare.None);
+                using var diskFileStream = _fileRepFactory.Data(internalFileId).GetStream(FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
 
                 var totalDiskFileLength = diskFileStream.Length;
                 if (fileUploadLengthProvidedDuringCreate == totalDiskFileLength)
