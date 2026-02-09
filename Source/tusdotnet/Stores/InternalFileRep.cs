@@ -1,4 +1,7 @@
 ﻿using System.IO;
+#if netfull
+using System.Threading;
+#endif
 
 namespace tusdotnet.Stores
 {
@@ -16,7 +19,24 @@ namespace tusdotnet.Stores
 
         public void Delete()
         {
+#if netfull
+            // Work around for issues similar to this: https://github.com/tusdotnet/tusdotnet/pull/228 
+            const int MAX_ATTEMPTS = 3;
+            for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
+            {
+                try
+                {
+                    File.Delete(Path);
+                    return;
+                }
+                catch (IOException) when (attempt < MAX_ATTEMPTS - 1)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+#else
             File.Delete(Path);
+#endif
         }
 
         public bool Exist()
